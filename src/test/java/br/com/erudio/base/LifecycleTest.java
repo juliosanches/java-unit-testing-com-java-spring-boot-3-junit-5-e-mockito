@@ -1,4 +1,4 @@
-package br.com.erudio;
+package br.com.erudio.base;
 
 import org.junit.jupiter.api.*;
 
