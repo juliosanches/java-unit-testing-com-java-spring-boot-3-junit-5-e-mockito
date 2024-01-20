@@ -4,6 +4,7 @@ import br.com.erudio.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,11 +45,9 @@ class CourseBusinessMockWithBDDTest {
     void testCoursesRelatedToSpring_When_UsingAStub() {
 
         // When / Act
-        given(mockService.retrieveCourses("Leandro"))
-                .willReturn(courses);
+        given(mockService.retrieveCourses("Leandro")).willReturn(courses);
 
-        var filteredCourses =
-                business.retrieveCoursesRelatedToSpring("Leandro");
+        var filteredCourses = business.retrieveCoursesRelatedToSpring("Leandro");
 
         // Then / Assert
         assertThat(filteredCourses.size(), is(4));
@@ -60,8 +59,7 @@ class CourseBusinessMockWithBDDTest {
     @DisplayName("Delete courses not related to Spring using mockito should call method deleteCourse")
     void testDeleteCoursesNotRelatedToSpring_UsingMockitoVerify_ShouldCallMethodDeleteCourse() {
         // Given / Arrange
-        given(mockService.retrieveCourses("Leandro"))
-                .willReturn(courses);
+        given(mockService.retrieveCourses("Leandro")).willReturn(courses);
         // When / Act
         business.deleteCoursesNotRelatedToSpring("Leandro");
 
@@ -75,26 +73,51 @@ class CourseBusinessMockWithBDDTest {
 
         verify(mockService, never()).deleteCourse("REST API's RESTFul do 0 à AWS com Spring Boot 3 Java e Docker");
     }
+
     // test[System Under Test]_[Condition or State Change]_[Expected Result]
     @Test
     @DisplayName("Delete courses not related to Spring using mockito should call method deleteCourseV2")
     void testDeleteCoursesNotRelatedToSpring_UsingMockitoVerify_ShouldCallMethodDeleteCourseV2() {
         // Given / Arrange
-        given(mockService.retrieveCourses("Leandro"))
-                .willReturn(courses);
+        given(mockService.retrieveCourses("Leandro")).willReturn(courses);
+        String agileCourse = "Agile Desmistificado com Scrum, XP, Kanban e Trello";
+        String archetureCoure = "Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#";
+        String resrSpringcourse = "REST API's RESTFul do 0 à AWS com Spring Boot 3 Java e Docker";
+
         // When / Act
         business.deleteCoursesNotRelatedToSpring("Leandro");
 
         // Then / Assert
-        then(mockService)
-                .should()
-                .deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");
-        then(mockService)
-                .should()
-                .deleteCourse("Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#");
+        then(mockService).should().deleteCourse(agileCourse);
 
-        then(mockService)
-                .should(never())
-                .deleteCourse("REST API's RESTFul do 0 à AWS com Spring Boot 3 Java e Docker");
+        then(mockService).should().deleteCourse(archetureCoure);
+
+
+        then(mockService).should(never()).deleteCourse(resrSpringcourse);
+    }
+
+
+    // test[System Under Test]_[Condition or State Change]_[Expected Result]
+    @Test
+    @DisplayName("Delete courses not related to Spring using mockito CapturingArguments should call method deleteCourse")
+    void testDeleteCoursesNotRelatedToSpring_CapturingArguments_ShouldCallMethodDeleteCourse() {
+        // Given / Arrange
+/*        courses =Arrays.asList(
+                "Agile Desmistificado com Scrum, XP, Kanban e Trello",
+                "REST API's RESTFul do 0 à AWS com Spring Boot 3 Java e Docker"
+        );*/
+
+        given(mockService.retrieveCourses("Leandro")).willReturn(courses);
+
+        ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+
+        String agileCourse = "Agile Desmistificado com Scrum, XP, Kanban e Trello";
+
+        // When / Act
+        business.deleteCoursesNotRelatedToSpring("Leandro");
+
+        // Then / Assert
+        then(mockService).should(times(7)).deleteCourse(argumentCaptor.capture());
+        assertThat(argumentCaptor.getAllValues().size(), is(7));
     }
 }
