@@ -11,6 +11,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 class CourseBusinessMockWithBDDTest {
@@ -73,5 +74,27 @@ class CourseBusinessMockWithBDDTest {
         verify(mockService, atLeastOnce()).deleteCourse("Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#");
 
         verify(mockService, never()).deleteCourse("REST API's RESTFul do 0 à AWS com Spring Boot 3 Java e Docker");
+    }
+    // test[System Under Test]_[Condition or State Change]_[Expected Result]
+    @Test
+    @DisplayName("Delete courses not related to Spring using mockito should call method deleteCourseV2")
+    void testDeleteCoursesNotRelatedToSpring_UsingMockitoVerify_ShouldCallMethodDeleteCourseV2() {
+        // Given / Arrange
+        given(mockService.retrieveCourses("Leandro"))
+                .willReturn(courses);
+        // When / Act
+        business.deleteCoursesNotRelatedToSpring("Leandro");
+
+        // Then / Assert
+        then(mockService)
+                .should()
+                .deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");
+        then(mockService)
+                .should()
+                .deleteCourse("Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#");
+
+        then(mockService)
+                .should(never())
+                .deleteCourse("REST API's RESTFul do 0 à AWS com Spring Boot 3 Java e Docker");
     }
 }
