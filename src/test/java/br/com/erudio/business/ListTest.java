@@ -1,8 +1,6 @@
 package br.com.erudio.business;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.List;
 
@@ -25,13 +23,12 @@ public class ListTest {
         assertEquals(10, list.size());
         assertEquals(10, list.size());
     }
+
     @Test
     void testMockingList_WhenSizeIsCalled_ShouldReturnMultipleValues() {
         // Given / Arrange
         List<?> list = mock(List.class);
-        when(list.size())
-                .thenReturn(10)
-                .thenReturn(20);
+        when(list.size()).thenReturn(10).thenReturn(20);
 
         // When / Act
         // Then / Assert
@@ -44,8 +41,7 @@ public class ListTest {
     void testMockingList_WhenGetIsCalled_ShouldReturnErudio() {
         // Given / Arrange
         List<?> list = mock(List.class);
-        when(list.get(0))
-                .thenReturn("Erudio");
+        when((String) list.get(0)).thenReturn("Erudio");
 
         // When / Act
         // Then / Assert
@@ -57,8 +53,7 @@ public class ListTest {
     void testMockingList_WhenGetIsCalledWithArgumentMatcher_ShouldReturnErudio() {
         // Given / Arrange
         List<?> list = mock(List.class);
-        when(list.get(anyInt()))
-                .thenReturn("Erudio");
+        when((String) list.get(anyInt())).thenReturn("Erudio");
 
         // When / Act
         // Then / Assert
@@ -77,7 +72,7 @@ public class ListTest {
         // Then / Assert
         assertThrows(RuntimeException.class, () -> {
             list.get(anyInt());
-        }, ()->"Should throw an RunTimeException");
+        }, () -> "Should throw an RunTimeException");
     }
 
 }
