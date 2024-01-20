@@ -2,6 +2,7 @@ package br.com.erudio.business;
 
 import br.com.erudio.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -10,7 +11,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 class CourseBusinessMockWithBDDTest {
 
@@ -53,4 +54,24 @@ class CourseBusinessMockWithBDDTest {
 
     }
 
+    // test[System Under Test]_[Condition or State Change]_[Expected Result]
+    @Test
+    @DisplayName("Delete courses not related to Spring using mockito should call method deleteCourse")
+    void testDeleteCoursesNotRelatedToSpring_UsingMockitoVerify_ShouldCallMethodDeleteCourse() {
+        // Given / Arrange
+        given(mockService.retrieveCourses("Leandro"))
+                .willReturn(courses);
+        // When / Act
+        business.deleteCoursesNotRelatedToSpring("Leandro");
+
+        // Then / Assert
+        verify(mockService).deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");
+//        verify(mockService).deleteCourse("Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#");
+
+//        verify(mockService, times(1)).deleteCourse("Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#");
+//        verify(mockService, atLeast(1)).deleteCourse("Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#");
+        verify(mockService, atLeastOnce()).deleteCourse("Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#");
+
+        verify(mockService, never()).deleteCourse("REST API's RESTFul do 0 à AWS com Spring Boot 3 Java e Docker");
+    }
 }
